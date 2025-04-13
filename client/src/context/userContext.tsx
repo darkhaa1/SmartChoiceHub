@@ -19,7 +19,7 @@ export type UserTypeContext = {
 const defaultValue: UserTypeContext = {
   user: null, // Pas d'utilisateur par défaut
   setUser: () => {}, // Valeur par défaut temporaire
-  setUserConnected: () => {},
+  setUserConnected: () => {}, // Valeur par défaut temporaire
   allUsers: [],
   setAllUsers: () => [],
 };
@@ -33,6 +33,26 @@ export const UserProvider = ({
   const [user, setUser] = useState<UserType | null>(null);
   const [userConnected, setUserConnected] = useState<UserType | null>(null);
   const [allUsers, setAllUsers] = useState<UserType[]>([]);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/me`, {
+          method: "GET",
+          credentials: "include",
+        });
+        if (response.status === 200) {
+          const data = await response.json();
+          setUserConnected(data);
+        } else {
+          setUserConnected(null);
+        }
+      } catch (err) {
+        setUserConnected(null);
+      }
+    };
+    checkAuth();
+  }, []);
 
   useEffect(() => {
     if (!userConnected) return;

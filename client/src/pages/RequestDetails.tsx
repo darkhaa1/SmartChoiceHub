@@ -58,6 +58,7 @@ function RequestDetails() {
       })
       .catch((error) => console.error("Error while fetching :", error));
   }, [id]);
+
   useEffect(() => {
     if (!user) return; // Vérifie si user est null avant d'exécuter le fetch
     if (!request) return;
@@ -66,6 +67,15 @@ function RequestDetails() {
       .then((data) => setComments(data))
       .catch((error) => console.error("Error while fetching :", error));
   }, [user, request]);
+
+  const refreshComments = () => {
+    if (!request) return;
+    fetch(`${import.meta.env.VITE_API_URL}/api/comments/request/${request.id}`)
+      .then((response) => response.json())
+      .then((data) => setComments(data))
+      .catch((error) => console.error("Error while fetching :", error));
+  };
+
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
@@ -229,7 +239,10 @@ function RequestDetails() {
                         )}
                         <div className="group-button">
                           {user && comment.user_id === user.id && (
-                            <CommentDelete id={comment.id} />
+                            <CommentDelete
+                              id={comment.id}
+                              refreshComments={refreshComments}
+                            />
                           )}
                           {user && comment.user_id === user.id && (
                             <CommentEdit
@@ -238,6 +251,7 @@ function RequestDetails() {
                               setEditedComment={setEditedComment}
                               isEditingComment={isEditingComment}
                               setIsEditingComment={setIsEditingComment}
+                              refreshComments={refreshComments}
                             />
                           )}
                         </div>
@@ -264,6 +278,7 @@ function RequestDetails() {
                 <CommentAdd
                   onClose={() => setIsModalOpen(false)}
                   requestId={request.id}
+                  refreshComments={refreshComments}
                 />
               </div>
             </div>

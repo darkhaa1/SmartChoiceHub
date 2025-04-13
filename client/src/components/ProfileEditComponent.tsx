@@ -5,10 +5,12 @@ import "../components/ProfileEditComponent.css";
 import UserContext from "../context/userContext";
 import DeleteUser from "./DeleteUser";
 import UserForm from "./UserForm";
+import { useNavigate } from "react-router-dom";
 
 function ProfileEditComponent() {
   const { user, setUser } = useContext(UserContext);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const navigate = useNavigate();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
@@ -117,7 +119,7 @@ function ProfileEditComponent() {
                         // Mise à jour de l'état local de l'utilisateur pour éviter d'utiliser window.location.reload();
                         prevUser ? { ...prevUser, ...userData } : null,
                       );
-                      window.location.reload();
+                      navigate("/profile");
                     } else {
                       alert(
                         "Une erreur s'est produite lors de la mise à jour du profile.",

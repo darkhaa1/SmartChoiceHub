@@ -8,8 +8,13 @@ import PrimaryButton from "./reuasble-ui/PrimaryButton";
 interface ComponentAddProps {
   onClose: () => void;
   requestId: number | null;
+  refreshComments: () => void;
 }
-function ComponentAdd({ onClose, requestId }: ComponentAddProps) {
+function ComponentAdd({
+  onClose,
+  requestId,
+  refreshComments,
+}: ComponentAddProps) {
   const [editorContent, setEditorContent] = useState("");
   const [tempContent, setTempContent] = useState("");
   const handleSave = () => {
@@ -43,8 +48,8 @@ function ComponentAdd({ onClose, requestId }: ComponentAddProps) {
       }
       if (response.status === 201) {
         alert("Comment submitted! Redirecting...");
+        refreshComments();
         onClose();
-        window.location.reload();
       }
     } catch (error) {
       console.error("Error creating comment");

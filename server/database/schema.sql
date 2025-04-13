@@ -83,8 +83,4 @@ values
   ("admin"),
   ("visiteur");
 
-insert into user(firstname, lastname,birthday, email, hashed_password, role_id)
-values
-  ("Toto", "Tutu", "1994-02-05" , "toto.tutu@mail.com", "123456", 1),
-  ("Tata", "Titi", "2000.01.02","tata.titi@mail.com", "78910", 2);
 
