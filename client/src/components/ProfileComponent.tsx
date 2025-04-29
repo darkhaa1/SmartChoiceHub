@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import defaultAvatar from "../assets/images/avatar.jpg";
+import defaultAvatar from "../assets/images/avatar.png";
 import editIcon from "../assets/images/edit-icon.png";
 import "../components/ProfileComponent.css";
 
@@ -23,12 +23,26 @@ function Profile() {
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files ? e.target.files[0] : null;
-    if (file) {
-      setAvatarFile(file);
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const allowedTypes = [
+      "image/jpeg",
+      "image/jpg",
+      "image/png",
+      "image/webp",
+      "image/bmp",
+      "image/gif",
+    ];
+    if (!allowedTypes.includes(file.type)) {
+      alert("Only image files are allowed (jpg, png, gif, etc.)");
+      return;
     }
+    if (file.size > 2 * 1024 * 1024) {
+      alert("File is too large. Max size is 2MB.");
+      return;
+    }
+    setAvatarFile(file);
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -36,10 +50,8 @@ function Profile() {
       alert("File not selected");
       return;
     }
-
     const formData = new FormData();
     formData.append("avatar", avatarFile);
-
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/upload-avatar/${user.id}`,
@@ -48,7 +60,6 @@ function Profile() {
           body: formData,
         },
       );
-
       const data = await response.json();
       if (response.ok) {
         setUser((prevUser) =>
@@ -57,11 +68,11 @@ function Profile() {
         setAvatarFile(null); // Réinitialise avatarFile pour cacher le bouton
         alert("Avatar updated");
       } else {
-        alert(data.message || "Une erreur s'est produite.");
+        alert(data.message);
       }
     } catch (error) {
       console.error("An error occurred while uploading avatar", error);
-      alert("Erreur de connexion au serveur.");
+      alert("An error occurred while uploading avatar");
     }
   };
 

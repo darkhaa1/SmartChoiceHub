@@ -6,7 +6,7 @@ import CommentEdit from "../components/CommentEdit";
 import RequestDetailCard from "../components/RequestDetailCard";
 import "./RequestDetails.css";
 import parse from "html-react-parser";
-import defaultAvatar from "../assets/images/avatar.jpg";
+import defaultAvatar from "../assets/images/avatar.png";
 import DeleteRequest from "../components/RequestDelete";
 import RequestEdit from "../components/RequestEdit";
 import EditorText from "../components/reuasble-ui/EditorText";
@@ -32,6 +32,7 @@ export interface RequestUser {
   details1: string;
   details2: string;
   details3: string;
+  impacted_person: number;
   firstname: string;
   lastname: string;
   avatar: string;
@@ -57,6 +58,7 @@ function RequestDetails() {
       })
       .catch((error) => console.error("Error while fetching :", error));
   }, [id]);
+
   useEffect(() => {
     if (!user) return; // Vérifie si user est null avant d'exécuter le fetch
     if (!request) return;
@@ -65,6 +67,15 @@ function RequestDetails() {
       .then((data) => setComments(data))
       .catch((error) => console.error("Error while fetching :", error));
   }, [user, request]);
+
+  const refreshComments = () => {
+    if (!request) return;
+    fetch(`${import.meta.env.VITE_API_URL}/api/comments/request/${request.id}`)
+      .then((response) => response.json())
+      .then((data) => setComments(data))
+      .catch((error) => console.error("Error while fetching :", error));
+  };
+
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
@@ -101,10 +112,15 @@ function RequestDetails() {
                   value={editedRequest.tag1 || ""}
                   onChange={handleInputChange}
                 >
-                  <option value="Sport">Sport</option>
-                  <option value="Eat">Eat</option>
-                  <option value="Drink">Drink</option>
-                  <option value="Sex">Sex</option>
+                  <option value="Finance">Finance</option>
+                  <option value="HR">Human Resources</option>
+                  <option value="Strategy">Strategy</option>
+                  <option value="Marketing">Marketing</option>
+                  <option value="Product">Product</option>
+                  <option value="Tech">Technology</option>
+                  <option value="Customer">Customer Relations</option>
+                  <option value="Operations">Operations</option>
+                  <option value="Operations">Other</option>
                 </select>
               </div>
             ) : (
@@ -119,14 +135,22 @@ function RequestDetails() {
                   value={editedRequest.tag2 || ""}
                   onChange={handleInputChange}
                 >
-                  <option value="Sport">Sport</option>
-                  <option value="Eat">Eat</option>
-                  <option value="Drink">Drink</option>
-                  <option value="Sex">Sex</option>
+                  <option value="Finance">Finance</option>
+                  <option value="HR">Human Resources</option>
+                  <option value="Strategy">Strategy</option>
+                  <option value="Marketing">Marketing</option>
+                  <option value="Product">Product</option>
+                  <option value="Tech">Technology</option>
+                  <option value="Customer">Customer Relations</option>
+                  <option value="Operations">Operations</option>
+                  <option value="Operations">Other</option>
                 </select>
               </div>
             ) : (
-              <span className="mobile-tag1">{request.tag2}</span>
+              request.tag2 &&
+              request.tag2 !== "---" && (
+                <span className="mobile-tag1">{request.tag2}</span>
+              )
             )}
           </div>
           <div id="user_info">
@@ -215,7 +239,10 @@ function RequestDetails() {
                         )}
                         <div className="group-button">
                           {user && comment.user_id === user.id && (
-                            <CommentDelete id={comment.id} />
+                            <CommentDelete
+                              id={comment.id}
+                              refreshComments={refreshComments}
+                            />
                           )}
                           {user && comment.user_id === user.id && (
                             <CommentEdit
@@ -224,6 +251,7 @@ function RequestDetails() {
                               setEditedComment={setEditedComment}
                               isEditingComment={isEditingComment}
                               setIsEditingComment={setIsEditingComment}
+                              refreshComments={refreshComments}
                             />
                           )}
                         </div>
@@ -241,14 +269,7 @@ function RequestDetails() {
                   label="Give my opinion"
                 />
               </div>
-              <RequestDetailCard
-                title={""}
-                userName={""}
-                userAvatar={""}
-                impactingUserAvatar={""}
-                impactedUserAvatar={""}
-                events={[]}
-              />
+              <RequestDetailCard requestId={request.id} />
             </div>
           </div>
           {isModalOpen && (
@@ -257,6 +278,7 @@ function RequestDetails() {
                 <CommentAdd
                   onClose={() => setIsModalOpen(false)}
                   requestId={request.id}
+                  refreshComments={refreshComments}
                 />
               </div>
             </div>
