@@ -1,0 +1,162 @@
+* {
+  font-family: "Roboto", sans-serif;
+}
+/* Styling pour RequestDetailCard */
+.request-detail-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 20px; /* Ajout pour espacer les cartes sur petits écrans */
+}
+
+.request-detail-card h2 {
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+}
+
+/* Conteneur pour le tableau */
+.table-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  overflow-x: auto; /* Permet le défilement horizontal pour le tableau */
+}
+
+/* Styles du tableau */
+table {
+  width: 100%;
+  max-width: 95%;
+  table-layout: fixed;
+  text-align: center;
+}
+
+th,
+td {
+  padding: 10px;
+  text-align: center;
+  margin: 5px 0; /* Réduction des marges */
+}
+
+/* Style flèche */
+.arrow {
+  text-align: center;
+  padding: 5px 0;
+  vertical-align: middle;
+  position: relative;
+}
+
+.arrow-down {
+  font-size: 2.5rem;
+  color: #0f1010;
+  margin-left: 0px;
+}
+
+.arrow::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: #000;
+  top: 69px;
+}
+
+/* Sections impact */
+.impact-sections {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+.th {
+  text-align: center;
+  align-items: center;
+}
+.impact-person {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 25px;
+}
+
+/* Utilisateur info */
+.user-info-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+.user-avatar {
+  width: 70px;
+  height: 70px;
+
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.avatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+}
+.user-name {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Ajout du display flex pour right-detail et details-and-table */
+
+/* Médiation pour les écrans plus petits */
+@media (max-width: 768px) {
+  .details-and-table {
+    order: 2;
+    flex-direction: column; /* Modification pour empiler les sections */
+  }
+
+  .right-details {
+    order: 1;
+    flex-direction: column;
+  }
+
+  .details-wrapper {
+    flex-direction: column-reverse; /* Modification pour empiler les éléments */
+  }
+
+  .mobile-tag {
+    width: 145px; /* La largeur s'adapte automatiquement */
+    height: px; /* La hauteur s'ajuste automatiquement */
+    padding: 4px 8px; /* Réduction du padding pour les petits écrans */
+  }
+
+  .request-detail-card h2 {
+    font-size: 1.3rem; /* Réduction de la taille du titre sur mobile */
+  }
+
+  .table-container {
+    overflow-x: auto; /* Défilement horizontal autorisé pour le tableau */
+  }
+
+  th,
+  td {
+    padding: 8px; /* Réduction du padding dans le tableau */
+  }
+}

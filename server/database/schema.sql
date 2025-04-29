@@ -1,21 +1,86 @@
-create table user (
-  id int unsigned primary key auto_increment not null,
-  email varchar(255) not null unique,
-  password varchar(255) not null
+CREATE TABLE role (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    rolename VARCHAR(50) NOT NULL
 );
 
-create table item (
-  id int unsigned primary key auto_increment not null,
-  title varchar(255) not null,
-  user_id int unsigned not null,
-  foreign key(user_id) references user(id)
+CREATE TABLE `user` (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    firstname VARCHAR(50) NOT NULL,
+    lastname VARCHAR(50) NOT NULL,
+    birthday DATE NOT NULL,
+    avatar VARCHAR(255),
+    email VARCHAR(50) NOT NULL UNIQUE,
+    hashed_password VARCHAR(255) NOT NULL,
+    role_id INT DEFAULT 2,
+    CONSTRAINT fk_user_role
+	      FOREIGN KEY (role_id) 
+        REFERENCES role(id)
+        ON DELETE SET NULL
 );
 
-insert into user(id, email, password)
-values
-  (1, "jdoe@mail.com", "123456");
+CREATE TABLE request (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+   `date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    title VARCHAR(50) NOT NULL,
+    tag1 VARCHAR(50) NOT NULL,
+    tag2 VARCHAR(50),
+    details1 TEXT NOT NULL,
+    details2 TEXT,
+    details3 TEXT,
+    user_id INT NOT NUll,
+    CONSTRAINT fk_request_user
+        FOREIGN KEY (user_id)
+        REFERENCES `user`(id)
+        ON DELETE CASCADE
+        
+);
 
-insert into item(id, title, user_id)
-values
-  (1, "Stuff", 1),
-  (2, "Doodads", 1);
+CREATE TABLE impacted_person (
+    request_id INT NOT NULL,
+    user_id INT NOT NULL,
+    PRIMARY KEY (request_id, user_id),
+    CONSTRAINT fk_impacted_person_request
+        FOREIGN KEY (request_id)
+        REFERENCES request(id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_impacted_person__user
+        FOREIGN KEY (user_id)
+        REFERENCES user(id)
+        ON DELETE CASCADE
+);
+CREATE TABLE impacting_person (
+    request_id INT NOT NULL,
+    user_id INT NOT NULL,
+    PRIMARY KEY (request_id, user_id),
+    CONSTRAINT fk_impacting_person_request
+        FOREIGN KEY (request_id)
+        REFERENCES request(id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_impacting_person__user
+        FOREIGN KEY (user_id)
+        REFERENCES user(id)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE comment (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    details TEXT NOT NULL,
+    `date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    user_id INT NOT NULL DEFAULT 1,
+    request_id INT NOT NULL DEFAULT 1,
+    CONSTRAINT fk_comment_user
+        FOREIGN KEY (user_id)
+        REFERENCES `user`(id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_comment_request
+        FOREIGN KEY (request_id)
+        REFERENCES request(id)
+        ON DELETE CASCADE
+);
+
+insert into `role`(rolename)
+values 
+  ("admin"),
+  ("visiteur");
+
+
