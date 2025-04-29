@@ -16,8 +16,6 @@ const login: RequestHandler = async (req, res, next) => {
       req.body.password,
     );
     if (verified) {
-      const { hashed_password, ...userWithoutHashedPassword } = user;
-
       const myPayload: MyPayload = {
         id: user.id.toString(),
         firstname: user.firstname,
@@ -52,7 +50,7 @@ const me: RequestHandler = (req, res) => {
   const token = req.cookies.token;
   // Récupère le cookie contenant le token
   if (!token) {
-    res.status(401).json({ message: "Non authentifié" });
+    res.status(401).json({ message: "Not authentified" });
   }
 
   try {

@@ -1,17 +1,16 @@
 import { useContext, useState } from "react";
-import defaultAvatar from "../assets/images/avatar.jpg";
+import defaultAvatar from "../assets/images/avatar.png";
 import editIcon from "../assets/images/edit-icon.png";
 import "../components/ProfileEditComponent.css";
-
-import { useNavigate } from "react-router-dom";
 import UserContext from "../context/userContext";
 import DeleteUser from "./DeleteUser";
 import UserForm from "./UserForm";
+import { useNavigate } from "react-router-dom";
 
 function ProfileEditComponent() {
-  const navigate = useNavigate();
   const { user, setUser } = useContext(UserContext);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const navigate = useNavigate();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
@@ -121,7 +120,6 @@ function ProfileEditComponent() {
                         prevUser ? { ...prevUser, ...userData } : null,
                       );
                       navigate("/profile");
-                      // window.location.reload();
                     } else {
                       alert(
                         "Une erreur s'est produite lors de la mise à jour du profile.",

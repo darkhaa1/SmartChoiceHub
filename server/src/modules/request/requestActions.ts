@@ -1,4 +1,6 @@
 import { type NextFunction, type RequestHandler, request } from "express";
+import impacted_personRepository from "./impacted_personRepository";
+import impacting_personRepository from "./impacting_personRepository";
 import requestRepository from "./requestRepository";
 
 const browse: RequestHandler = async (req, res, next) => {
@@ -27,8 +29,6 @@ const read: RequestHandler = async (req, res, next) => {
 const edit: RequestHandler = async (req, res, next) => {
   try {
     // Update a specific category based on the provided ID
-    console.info("couocu");
-    console.info(req.body);
     const request = {
       id: Number(req.params.id),
       title: req.body.title,
@@ -41,8 +41,6 @@ const edit: RequestHandler = async (req, res, next) => {
 
     const affectedRows = await requestRepository.update(request);
 
-    // If the category is not found, respond with HTTP 404 (Not Found)
-    // Otherwise, respond with the category in JSON format
     if (affectedRows === 0) {
       res.sendStatus(404);
     } else {
@@ -65,17 +63,24 @@ const add: RequestHandler = async (req, res, next) => {
       details1: req.body.details1,
       details2: req.body.details2,
       details3: req.body.details3,
-      user_id: req.body.user_id,
+      user_id: Number(req.user.id),
     };
 
-    // Create the user
     const insertId = await requestRepository.create(newRequest);
 
+    const insertImpactId = await impacted_personRepository.create(
+      insertId,
+      req.body.impactedPersonIds,
+    );
+
+    const insertImpactingId = await impacting_personRepository.create(
+      insertId,
+      req.body.impactingPersonIds,
+    );
     if (!insertId) {
-      throw new Error("Failed to create program.");
+      throw new Error("Failed to create request.");
     }
-    // Respond with HTTP 201 (Created) and the ID of the newly inserted user
-    res.status(201).json({ insertId });
+    res.status(201).json({ insertId, insertImpactId, insertImpactingId });
   } catch (err) {
     // Pass any errors to the error-handling middleware
     next(err);

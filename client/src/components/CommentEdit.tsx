@@ -7,6 +7,7 @@ interface EditCommentProps {
   setEditedComment: React.Dispatch<React.SetStateAction<Partial<CommentType>>>;
   isEditingComment: boolean;
   setIsEditingComment: React.Dispatch<React.SetStateAction<boolean>>;
+  refreshComments: () => void;
 }
 
 function CommentEdit({
@@ -15,6 +16,7 @@ function CommentEdit({
   setEditedComment,
   isEditingComment,
   setIsEditingComment,
+  refreshComments,
 }: EditCommentProps) {
   const handleEditToggle = () => {
     setIsEditingComment(!isEditingComment);
@@ -37,7 +39,7 @@ function CommentEdit({
       );
       setEditedComment({ ...comment, ...editedComment } as CommentType);
       setIsEditingComment(false);
-      window.location.reload();
+      refreshComments();
     } catch (error) {
       console.error("Error while fetching :", error);
     }

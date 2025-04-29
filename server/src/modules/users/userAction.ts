@@ -100,6 +100,7 @@ const destroy: RequestHandler = async (req, res, next) => {
     next(err);
   }
 };
+
 export default { browse, read, edit, add, destroy };
 
 ///test

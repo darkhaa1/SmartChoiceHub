@@ -1,15 +1,20 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import "react-quill/dist/quill.snow.css";
 import "./CommentAdd.css";
 import ReactQuill from "react-quill";
-import UserContext from "../context/userContext";
+
 // import EditorText from "./reuasble-ui/EditorText";
 import PrimaryButton from "./reuasble-ui/PrimaryButton";
 interface ComponentAddProps {
   onClose: () => void;
   requestId: number | null;
+  refreshComments: () => void;
 }
-function ComponentAdd({ onClose, requestId }: ComponentAddProps) {
+function ComponentAdd({
+  onClose,
+  requestId,
+  refreshComments,
+}: ComponentAddProps) {
   const [editorContent, setEditorContent] = useState("");
   const [tempContent, setTempContent] = useState("");
   const handleSave = () => {
@@ -18,13 +23,11 @@ function ComponentAdd({ onClose, requestId }: ComponentAddProps) {
   const handleCancel = () => {
     setTempContent(editorContent);
   };
-  const { user } = useContext(UserContext);
   // Fonction pour récupérer uniquement le texte sans balises HTML
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const commentData = {
       details: tempContent,
-      user_id: user ? user.id : null,
       request_id: requestId,
     };
     try {
@@ -32,6 +35,7 @@ function ComponentAdd({ onClose, requestId }: ComponentAddProps) {
         `${import.meta.env.VITE_API_URL}/api/comments/`,
         {
           method: "POST",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },
@@ -44,8 +48,8 @@ function ComponentAdd({ onClose, requestId }: ComponentAddProps) {
       }
       if (response.status === 201) {
         alert("Comment submitted! Redirecting...");
+        refreshComments();
         onClose();
-        window.location.reload();
       }
     } catch (error) {
       console.error("Error creating comment");
